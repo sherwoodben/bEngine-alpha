@@ -224,7 +224,7 @@ contextVariables = {
 }
 
 -- alias the long name to something a bit shorter
-local cv = contextVariables
+cv = contextVariables
 
 -- gets the context values from the "config.json" file (and the current working directory)
 --

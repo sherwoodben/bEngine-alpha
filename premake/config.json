@@ -6,7 +6,7 @@
 	"buildExamples" : "true",
 	"buildTests" : "true",
 	"debugDefinitions" : "",
-	"libraries" : "glfw",
+	"libraries" : "",
 	"libraryBinaryDirs" : "",
 	"libraryIncludeDirs" : "../vendors/*/include",
 	"postbuildCommands" : "",

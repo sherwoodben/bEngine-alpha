@@ -26,7 +26,7 @@
 // implement this main function. However, this behavior can be changed by editing this (default) file, or more
 // specifically by uncommenting the following line:
 
-// #undef bNO_ENTRY_POINT
+#undef bNO_ENTRY_POINT
 
 // if we're building tests, the "bUnitTests.h" header already has a main function to use as the (test) application's
 // entry point so we don't need to include another entry point. This even overrides the value set above!
