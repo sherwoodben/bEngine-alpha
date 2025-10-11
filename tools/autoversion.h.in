@@ -1,0 +1,19 @@
+#ifndef AUTOVERSION_H
+#define AUTOVERSION_H
+
+/// @file autoversion.h
+/// @brief the automatically generated versioning file, provides useful versioning macros
+///
+/// the version is determined based on the tag provided by github. The tag should be based on
+/// SemVer. Additionally, the commit hash is stored in case that could be of use. Lastly, if
+/// there are local changes (i.e. it's  "dirty") the version string will end with a '+'
+
+// DO NOT MODIFY THIS FILE! (unless you know what you're doing!)
+
+#define @PROJECT_NAME@_VERSION_STRING "@VERSION_STRING@"
+#define @PROJECT_NAME@_VERSION_MAJOR @VERSION_MAJOR@
+#define @PROJECT_NAME@_VERSION_MINOR @VERSION_MINOR@
+#define @PROJECT_NAME@_VERSION_PATCH @VERSION_PATCH@
+#define @PROJECT_NAME@_COMMIT_HASH "@COMMIT_HASH@"
+
+#endif // AUTOVERSION_H
