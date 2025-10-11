@@ -538,12 +538,56 @@ function populate_autoversion_file()
 
   -- write the autoversion.h file to the ../src/ directory
   local f, err = os.writefile_ifnotequal(autoversion_content, path.join("../src/", "autoversion.h"))
-  if (f == 0) then
-    print("autoversion.h is already up to date.")
-  elseif (f < 0) then
-    error(err, 0)
-  elseif (f > 0) then
+  if (f) then
     print("Generated autoversion.h...")
+  else
+    print("Could not create autoversion.h! ", err)
+  end
+end
+
+--[[
+##########################################################################################
+  DOXYGEN FILE POPULATION function
+##########################################################################################
+
+    creates an "Doxyfile" file in the '../tools/' directory, populated with values
+    derived from the git tag/default values if the information cannot be found
+
+    at this point, to update the values in the generated Doxygen file one must run the
+    premake "build" action to rebuild the workspace
+--]]
+
+function populate_doxygen_file()
+  -- read the contents of the autoversion.h input file
+  local doxygen_content = io.readfile("../tools/Doxyfile.in")
+
+  -- attempt to get the git tag for the folder
+  local git_tag, errorCode = os.outputof("git describe --long --dirty --tags")
+
+  -- if the tag was found, populate the input files with the data in the tag
+  if (errorCode == 0) then
+    parts = string.explode(git_tag, "-", true)
+        
+    doxygen_content = doxygen_content:gsub("@VERSION_STRING@", parts[1])
+
+  -- if the tag was not found, populate the input files with default values
+  else
+    print("Warning: `git describe --long --dirty --tags` failed with error code", errorCode, git_tag)
+    print("Populating files with default values which may not reflect the true version number.")
+    doxygen_content = doxygen_content:gsub("@VERSION_STRING@", "")
+
+  end
+
+  -- be sure to update the project name so the macros actually make sense!
+  -- (replace any spaces or dashes with underscores)
+  doxygen_content = doxygen_content:gsub("@PROJECT_NAME@", cv.projectName:gsub("[ -]", "_"):upper())
+
+  -- write the autoversion.h file to the ../src/ directory
+  local f, err = os.writefile_ifnotequal(doxygen_content, path.join("../tools/", "Doxyfile"))
+  if (f) then
+    print("Generated Doxygen file...")
+  else
+    print("Could not create Doxygen file! ", err)
   end
 end
 
@@ -591,6 +635,10 @@ function make_main_project()
     if (string.lower(cv.autoVersion[1]) == "true") then
       populate_autoversion_file()
     end
+
+    -- populate the documentation file...
+    populate_doxygen_file()
+
     -- only do the following if we're generating tests...
     if (string.lower(cv.buildTests[1]) == "true") then
       -- the tests project is an application, so linking it just creates a build dependency

@@ -23,4 +23,8 @@
 # is used to actually generate the header is tracked, so this is fine.
 /src/autoversion.h
 
+# ignore the GENERATED Doxyfile file since it depends on git tags/commit hashes and could lead to confusing history. The file which is
+# is used to actually generate the file is tracked, so this is fine.
+/tools/Doxyfile
+
 # ADD files and folders as needed
