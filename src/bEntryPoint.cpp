@@ -1,3 +1,7 @@
+// include the autoversion header here just to ensure it's included in the build. Can also add version
+// requirements/assertions here if needed!
+#include "autoversion.h"
+
 // if the "build tests" flag was set to true during configuration, the tests exectuble is actually built by compiling
 // this	file with the bUnitTests header included in this file...
 #ifdef bBUILD_TESTS

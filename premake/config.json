@@ -1,0 +1,16 @@
+{
+	"additionalConfigurations" : "",
+	"additionalPlatforms" : "",
+	"additionalProjectDirs" : "../vendors/glfw/premake",
+	"autoVersion" : "true",
+	"buildExamples" : "true",
+	"buildTests" : "true",
+	"debugDefinitions" : "",
+	"libraries" : "glfw",
+	"libraryBinaryDirs" : "",
+	"libraryIncludeDirs" : "../vendors/*/include",
+	"postbuildCommands" : "",
+	"prebuildCommands" : "",
+	"projectType" : "StaticLib",
+	"releaseDefinitions" : ""
+}
