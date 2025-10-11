@@ -49,6 +49,9 @@ function set_example_project_defaults()
 
     -- link platform-specific libraries
     filter "platforms:Windows"
+        -- I'm not entirely sure this is needed at the application level, but we'll include it anyway.
+        -- included in the Windows platform filter because this is the only place glfw is linked for now.
+        defines { "_CRT_SECURE_NO_WARNINGS" }
         links
         {
             "glfw"
