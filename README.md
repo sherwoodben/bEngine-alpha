@@ -61,4 +61,6 @@ This section will be detailed as the contents of the repository mature.
 
 For now, documentation in the form of doxygen comments have been provided for all bEngine header files. If doxygen[^3] is installed on your system, the provided batch files in the `/tools/` directory can be used to documentation (html format) for a detailed overview of the library.
 
+An example project has been included. The example project is a very bare-bones application, but it should provide a basic "guide" in lieu of an actual usage section (at least for now)!
+
 [^3]: Additionally, the default generated Doxyfile is configured to expect the "dot" tool from graphviz be available on the system. If the dot tool is not available on the system, the values in the `/tools/Doxyfile.in` file can be adjusted to reflect the absence of dot. When the batch file to generate the solution file is run, the Doxyfile will be created/updated to reflect the changes to `/tools/Doxyfile.in`.
