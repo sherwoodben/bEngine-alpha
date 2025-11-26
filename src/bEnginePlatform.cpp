@@ -5,12 +5,12 @@
 /// @file bEnginePlatform.cpp
 /// @brief implementations for the bEnginePlatform.h file
 
-#include "bEngineUtilities.h"
+#include "bEngineUtilities.h" // for access to error/info message macros
 
 // WINDOWS implementations
 #ifdef WIN32
 
-#    include <GLFW\glfw3.h>
+#    include <GLFW\glfw3.h> // platform/window management is provided by GLFW
 
 const bool bEngine::Platform::initialize_platform_backends()
 {

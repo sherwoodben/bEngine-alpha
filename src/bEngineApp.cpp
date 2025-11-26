@@ -5,11 +5,11 @@
 /// @file bEngineApp.cpp
 /// @brief implementations for the bEngineApp.h file
 
-#include "bEnginePlatform.h"
-#include "bEngineUtilities.h"
-#include "bEngineWindow.h"
+#include "bEnginePlatform.h"  // for access to platform-specific functions/methods
+#include "bEngineUtilities.h" // for access to versioning functions and info/warning/error macros
+#include "bEngineWindow.h"    // for access to the bEngineWindow class definition
 
-#include <format>
+#include <format> // for formatting the default app name
 
 const std::string bEngine::bEngineApp::s_defaultAppName{std::format(
     "bEngine-alpha v{} ({}) Application",
@@ -17,7 +17,6 @@ const std::string bEngine::bEngineApp::s_defaultAppName{std::format(
     bEngine::Utils::get_commit_hash())};
 
 bEngine::bEngineApp::bEngineApp(
-    AppToken        token,
     std::string   &&name,
     app_init_fn     initFn,
     app_update_fn   updateFn,
@@ -39,19 +38,12 @@ bEngine::bEngineApp bEngine::bEngineApp::create_app(
     app_tick_fn     tickFn,
     app_shutdown_fn shutdownFn)
 {
-    return bEngine::bEngineApp{
-
-        AppToken{},
-        std::move(name),
-        initFn,
-        updateFn,
-        tickLength,
-        tickFn,
-        shutdownFn};
+    return bEngine::bEngineApp{std::move(name), initFn, updateFn, tickLength, tickFn, shutdownFn};
 }
 
 void bEngine::bEngineApp::shutdown() const
 {
+    // we only want to attempt to call the user-provided function if it actually exists!
     if (m_shutdownFn)
         m_shutdownFn(this);
 }
@@ -64,8 +56,11 @@ const unsigned int bEngine::bEngineApp::add_window(std::unique_ptr<bEngineWindow
 
 const bool bEngine::bEngineApp::initialize()
 {
+    // we only want to attempt to call the user-provided function if it actually exists!
     if (m_initFn)
         return m_initFn(this);
+
+    // now we do general application initialization stuff (if needed) and return true so long as everything goes well
 
     return true;
 }

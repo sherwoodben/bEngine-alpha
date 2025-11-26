@@ -3,28 +3,45 @@
 /// @file bEngineUtilities.h
 /// @brief a collection of utility functions and macros which may be useful to the user as well as internally
 
-#pragma region UTILITY_MACROS
-
-#include <format>
-#include <stdexcept>
+#include <exception> // for the bEngineException base class (std::exception)
+#include <format>    // for formatting assertion messages and info/warning/error messages
+#include <string>    // for strings for use in exceptions
 
 #ifdef DEBUG
-#    include <iostream>
+#    include <iostream> // we only print to the console in debug mode, so only need to include it there!
 
-#    define ANSI_RESET_CODE  "\033[0m"
-#    define ANSI_GREEN_CODE  "\033[32m"
-#    define ANSI_YELLOW_CODE "\033[33m"
-#    define ANSI_RED_CODE    "\033[31m"
+#    define ANSI_RESET_CODE  "\033[0m"  // to reset the style
+#    define ANSI_GREEN_CODE  "\033[32m" // to switch to green text color
+#    define ANSI_YELLOW_CODE "\033[33m" // to switch to yellow text color
+#    define ANSI_RED_CODE    "\033[31m" // to switch to red text color
 
-#    define INFO_MSG(msg)    std::cout << std::format("{}[INFO]{} - {}\n", ANSI_GREEN_CODE, ANSI_RESET_CODE, msg)
+/// @brief info message decorator, outputs an info message to the console AND outputs an info message to the log
+/// @param msg the message to be output/logged
+#    define INFO_MSG(msg) std::cout << std::format("{}[INFO]{} - {}\n", ANSI_GREEN_CODE, ANSI_RESET_CODE, msg)
+
+/// @brief warning message decorator, outputs a warning message to the console AND outputs a warning message to the log
+/// @param msg the message to be output/logged
 #    define WARNING_MSG(msg) std::cout << std::format("{}[WARNING]{} - {}\n", ANSI_YELLOW_CODE, ANSI_RESET_CODE, msg)
-#    define ERROR_MSG(msg)   std::cout << std::format("{}[ERROR]{} - {}\n", ANSI_RED_CODE, ANSI_RESET_CODE, msg)
+
+/// @brief error message decorator, outputs an error message to the console AND outputs an error message to the log
+/// @param msg the message to be output/logged
+#    define ERROR_MSG(msg) std::cout << std::format("{}[ERROR]{} - {}\n", ANSI_RED_CODE, ANSI_RESET_CODE, msg)
 #else
-#    define INFO_MSG(...)
-#    define WARNING_MSG(...)
-#    define ERROR_MSG(...)
+/// @brief info message decorator, outputs an info message to the log
+/// @param msg the message to be logged
+#    define INFO_MSG(msg)
+/// @brief warning message decorator, outputs a warning message to the log
+/// @param msg the message to be logged
+#    define WARNING_MSG(msg)
+/// @brief error message decorator, outputs an error message to the log=
+/// @param msg the message to be logged
+#    define ERROR_MSG(msg)
 #endif // DEBUG
 
+/// @brief an assertion that works in debug AND release mode; throws a bEngineException with the reason for failure
+/// @param cond the condition to assert is true
+/// @param msg the message to use in the assertion failure message, accessible in the thrown exception (or printed to
+/// the console in debug mode)
 #define bENGINE_ASSERT(cond, msg)                                                                                      \
     do                                                                                                                 \
     {                                                                                                                  \
@@ -37,22 +54,31 @@
         }                                                                                                              \
     } while (0)
 
-#pragma endregion UTILITY_MACROS
-
 namespace bEngine
 {
     /// @brief struct representing a bEngineException (i.e. an unrecoverable error)
+    ///
+    /// these should be used sparingly, and practically never by the user. They may be removed from forward facing API,
+    /// but that might necessitate making a "privateUtilities" header which seems like an even worse idea than leaving a
+    /// very basic exception class that offers no interactivity with the application public!
     struct bEngineException : public std::exception
     {
-        const std::string m_msg{"An unknown exception has occured."};
+        inline static const std::string s_defaultMsg{"An unknown exception has occured."};
+        /// @brief the message associateds with the exception, used for logging/printing
+        const std::string m_msg{s_defaultMsg};
 
+        /// @brief default ctor is acceptable
         bEngineException() = default;
 
+        /// @brief ctor which takes a message to set as the exception's message
+        /// @param msg the message to set as the exception's message
         bEngineException(std::string &&msg)
             : std::exception{},
-              m_msg{msg.empty() ? "An unknown exception has occured." : msg} { };
+              m_msg{msg.empty() ? std::string{s_defaultMsg} : msg} { };
 
-        const char *const what() { return m_msg.c_str(); };
+        /// @brief gets the exception's message as a c_str
+        /// @return the exception's message as a c_str
+        virtual char const *what() const override final { return m_msg.c_str(); };
     };
 
     /// @brief houses methods related to utilities associated with the library, including meta-information about the
