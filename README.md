@@ -3,6 +3,9 @@
 >
 > However, this also means the public API is subject to change at any point. After the release of 1.0.0 a stable API will be maintained but until that point almost anything can change at any time! Documentation will be kept as up to date as possible, though it may not be 100% accurate during initial development phases.
 
+> [!Note]
+> Due to the possibility of a rapidly changing/not finalized API while development proceeds in major version 0, it is assumed ALL updates to minor versions introduce breaking changes. The commit messages associated with these breaking changes _will not be required_ to (but may) indicate a breaking change-- only with the release of version 1.0.0 will these commit messages be enforced.
+
 # bEngine-alpha Overview
 
 bEngine-alpha (henceforth bEngine) is a framework[^1] for creating games/applications for multiple target platforms using (and possibly abstracting) OpenGL. bEngine is designed to be fairly simple/low level, mostly providing:
