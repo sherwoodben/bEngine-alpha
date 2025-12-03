@@ -1,20 +1,21 @@
 > [!Warning]
 > This README is based on that of an old/private attempt at an engine/framework. The attempt was actually going quite well, then I got busy and needed a JSON library and it fell to the wayside a bit. This new project (bEngine-alpha) is a resurrection of that project, using the better practices I know now. That being said, the README may not be 100% accurate to the current state of the project. By version 1.0.0, this README will be completely up to date!
 >
-> However, this also means the public API is subject to change at any point. After the release of 1.0.0 a stable API will be maintained but until that point almost anything can change at any time! Documentation will be kept as up to date as possible, though it may not be 100% accurate during initial development phases.
+> However, this also means development (at least in the beginning) should move pretty quickly! I'll be copying _a lot_ of what I already had because some of it was pretty decent; I'm just
+> going to be more organized this time!
 
 # bEngine-alpha Overview
 
-bEngine-alpha (henceforth bEngine) is a framework[^1] for creating games/applications for multiple target platforms using (and possibly abstracting) OpenGL. bEngine is designed to be fairly simple/low level, mostly providing:
+bEngine-alpha (henceforth bEngine) is a framework[^1] for creating games/applications for multiple target platforms using OpenGL. bEngine is designed to be fairly simple/low level, mostly providing:
 
-- an application interface for interacting with the system/windows/platform
-- (planned) classes for wrapping GL objects for easier use and to manage their lifetime on the GPU; this may also lead to abstracting away all need for the end user to actually call GL functions
-- an entry point for an application, so the user only needs to supply a handful of function definitions which will be used by the application in a pre-defined sequence
+- interfaces for interacting with the system/window/platform
+- classes for wrapping GL objects for easier use and to manage their lifetime on the GPU
+- an "application loop" to provide a general structure that applications must follow.
 
 [^1]: Is it a framework? A library? Who knows! Hopefully it's useful, though! As such, bEngine may be referred to as a framework or a library throughout the documentation, depending on the context or vibes.
 
 > [!Note]
-> At this point, the only platform that is actually implemented is Windows. That being said, the Windows platform utilizes glad/glfw, so extending to Linux/Unix-like systems shouldn't be terribly difficult-- I just don't have the means to test these configurations right now! Still, the framework is (hopefully) being developed in such a way that supporting other platforms is "just" a matter of replacing some platform specific implementations!
+> At this point, the only platform that is actually implemented is Windows. That being said, the Windows platform utilizes glad/glfw, so extending to Linux/Unix-like systems shouldn't be terribly difficult-- I just don't have the means to test these configurations right now! Still, the framework is (hopefully) being developed in such a way that supporting other platforms is "just" a matter of replacing some platform specific files!
 
 # Installation
 
@@ -42,7 +43,7 @@ bEngine is configured to use premake to generate a Visual Studio (2022/2026) sol
 - Dependencies/vendor libraries
 	- GLFW (on Windows platforms)
 	- ~~Dear ImGui~~ (Not currently implemented)
-- Example applications which consume/utilize bEngine
+- Example applications which consume bEngine/its dependencies
 
 The user must provide a copy of the premake5 executable in the `/premake/` directory. Batch files has been provided in the `/premake/` directory which have the following effects when run[^2], assuming the executable is also in the directory (or available on the system path):
 
@@ -51,7 +52,7 @@ The user must provide a copy of the premake5 executable in the `/premake/` direc
 
 Open the generated solution, select a target configuration and platform, then build the entire solution. All resulting binaries including libraries and example executables are then found in `/build/bin/<platform>/<configuration>/`.
 
-___If___ a third party library is required that is not to be built during this project's build step, explicit details/documentation will be provided as to _what_ is needed and _where_ it must be located.
+___If___ a third party library is required that is not to be built during this build project, explicit details/documentation will be provided as to _what_ is needed and _where_ it must be located.
 
 [^2]: Don't just take my word for it and run random batch files! Go ahead and take a look to make sure everything looks good.
 

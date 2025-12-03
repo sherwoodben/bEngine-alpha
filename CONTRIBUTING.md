@@ -18,13 +18,12 @@ Exceptions to the above were made in the preliminary "setup" phase of the reposi
 
 The following are used as "types" for the commit messages; if I see a need to add a new type I will!
 
-|__Type__|__Use Case__                                         |
-|:------:|:----------------------------------------------------|
-| fix    | fixed a bug/error                                   |
-| feat   | a new feature has been added                        |
-| setup  | configured settings, etc.                           |
-| docs   | changes to documentation                            |
-| wip    | useful on feature branches for  in-progress commits |
+|__Type__|__Use Case__                  |
+|:------:|:-----------------------------|
+| fix    | fixed a bug/error            |
+| feat   | a new feature has been added |
+| setup  | configured settings, etc.    |
+| docs   | changes to documentation     |
 
 As always, BREAKING CHANGE is an acceptable footer, as is the BREAKING-CHANGE footer and the ! signifier in the type.
 
