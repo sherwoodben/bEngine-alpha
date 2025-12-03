@@ -8,7 +8,7 @@ In short:
 
 - Most "work" should be done on feature branches, which are then merged into the `dev` branch. These merges _may_ be squashed when merging to `dev` but also _may_ preserve individual commits.
 - Commit messages on feature branches _may_ follow "conventional commit" guidelines; at a minimum they _must_ be descriptive.
-- Once tests have been run (if they exist at that point) for "significant" progress-points on the  `dev` branch, the `dev` branch will be merged to `main`. These merges _must NOT_ be squashed into one commit, to ensure the main/dev branches do not diverge (I'm pretty sure that's how it works but I might be misunderstanding-- in any case, see the recommendation _by GitHub_ [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squashing-and-merging-a-long-running-branch)).
+- Once tests have been run (if they exist at that point) for "significant" progress-points on the  `dev` branch, the `dev` branch will be merged to `main`. These merges _must_ be squashed into one commit.
 - Commit messages on the `dev`/`main` branches _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feature`, or `setup`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this.
 - All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`).
 
