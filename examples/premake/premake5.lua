@@ -5,7 +5,7 @@
 
 -- ALL of the examples will have the same basic location/includes, etc; so we'll make
 -- a function to do that as many times as we need:
-function set_example_project_defaults()
+local function set_example_project_defaults()
     location "%{wks.location}/../build/"
     filter "configurations:Debug"
         kind "ConsoleApp"
@@ -33,30 +33,15 @@ function set_example_project_defaults()
         runtime "Release"
     filter {}
 
-    -- get all of the library include directories (in addition to the bEngine library!)
-    local allLibIncludeDirs = cv.libraryIncludeDirs
-    table.insert(allLibIncludeDirs, "../include/")
-    for idx, val in ipairs(cv.libraryIncludeDirs) do
-        if val ~= "" then
-            includedirs("../" .. val)
-        end
-    end
+    -- include the bEngine public headers (we don't care about the implementation when we're building an app!)
+    includedirs {
+        "../../include/"
+    }
 
-    -- link all of the libraries (in addition to the bEngine library!)
+    -- link to bEngine
     links {
         "bEngine-alpha",
     }
-
-    -- link platform-specific libraries
-    filter "platforms:Windows"
-        -- I'm not entirely sure this is needed at the application level, but we'll include it anyway.
-        -- included in the Windows platform filter because this is the only place glfw is linked for now.
-        defines { "_CRT_SECURE_NO_WARNINGS" }
-        links
-        {
-            "glfw"
-        }
-    filter {}
 end
 
 project "hello-world"
