@@ -8,10 +8,10 @@ In short:
 
 - Most "work" should be done on feature branches, which are then merged into the `main` branch.
 - Commit messages on feature branches _may_ follow "conventional commit" guidelines; at a minimum they _must_ be descriptive.
-- Commit messages on the `main` branch _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feat`, `setup` or `docs`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this.
-- All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`). Exceptions may be made in the case of updates which only apply to documentation.
+- Commit messages on the `main` branch _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feat`, `setup` or `docs`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this. To facilitate this, it might be useful to squash the commits of a feature branch such that a single conventional commit message can represent the new feature or patch being implemented by the feature branch instead of trying to determine if the type should be located in a commit message on the feature branch or in the merge commit message itself.
+- All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`). Exceptions may be made in the case of updates which only apply to documentation. This may also be made easier by utilizing squash commits.
 
-Exceptions to the above were made in the preliminary "setup" phase of the repository-- for instance there was a short lived `dev` branch that has been abandoned in favor of merging the feature branches directly to main.
+Exceptions to the above were made in the preliminary "setup" phase of the repository-- for instance there was a short lived `dev` branch that has been abandoned in favor of merging the feature branches directly to main which also resulted in some untagged commits on main-- not a huge deal, but if I'm setting rules I'd like to follow them!
 
 # Conventional Commit Types
 
