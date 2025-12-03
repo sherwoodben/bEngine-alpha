@@ -10,10 +10,10 @@
 // this just creates a macro 'bENTRY_POINT' to reflect the current configuration/platform's entry point
 #if defined RELEASE && defined _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
-#        define WIN_32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
 #    endif // !WIN32_LEAN_AND_MEAN
 #    include <Windows.h>
-#    undef WIN_32_LEAN_AND_MEAN
+#    undef WIN32_LEAN_AND_MEAN
 #    define bENTRY_POINT()                                                                                             \
         WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ PSTR lpCmdLine, _In_ int nCmdShow)
 #endif
