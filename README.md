@@ -3,9 +3,6 @@
 >
 > However, this also means the public API is subject to change at any point. After the release of 1.0.0 a stable API will be maintained but until that point almost anything can change at any time! Documentation will be kept as up to date as possible, though it may not be 100% accurate during initial development phases.
 
-> [!Note]
-> Due to the possibility of a rapidly changing/not finalized API while development proceeds in major version 0, it is assumed ALL updates to minor versions introduce breaking changes. The commit messages associated with these breaking changes _will not be required_ to (but may) indicate a breaking change-- only with the release of version 1.0.0 will these commit messages be enforced.
-
 # bEngine-alpha Overview
 
 bEngine-alpha (henceforth bEngine) is a framework[^1] for creating games/applications for multiple target platforms using (and possibly abstracting) OpenGL. bEngine is designed to be fairly simple/low level, mostly providing:
@@ -63,7 +60,5 @@ ___If___ a third party library is required that is not to be built during this p
 This section will be detailed as the contents of the repository mature.
 
 For now, documentation in the form of doxygen comments have been provided for all bEngine header files. If doxygen[^3] is installed on your system, the provided batch files in the `/tools/` directory can be used to documentation (html format) for a detailed overview of the library.
-
-An example project has been included. The example project is a very bare-bones application, but it should provide a basic "guide" in lieu of an actual usage section (at least for now)!
 
 [^3]: Additionally, the default generated Doxyfile is configured to expect the "dot" tool from graphviz be available on the system. If the dot tool is not available on the system, the values in the `/tools/Doxyfile.in` file can be adjusted to reflect the absence of dot. When the batch file to generate the solution file is run, the Doxyfile will be created/updated to reflect the changes to `/tools/Doxyfile.in`.
