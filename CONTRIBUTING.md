@@ -6,13 +6,12 @@ To be clear: "conventional commit" guidelines in this context refer to [this spe
 
 In short:
 
-- Most "work" should be done on feature branches, which are then merged into the `dev` branch. These merges _may_ be squashed when merging to `dev` but also _may_ preserve individual commits.
+- Most "work" should be done on feature branches, which are then merged into the `main` branch.
 - Commit messages on feature branches _may_ follow "conventional commit" guidelines; at a minimum they _must_ be descriptive.
-- Once tests have been run (if they exist at that point) for "significant" progress-points on the  `dev` branch, the `dev` branch will be merged to `main`. These merges _must_ be squashed into one commit.
-- Commit messages on the `dev`/`main` branches _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feature`, or `setup`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this.
-- All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`).
+- Commit messages on the `main` branch _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feat`, `setup` or `docs`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this.
+- All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`). Exceptions may be made in the case of updates which only apply to documentation.
 
-Exceptions to the above were made in the preliminary "setup" phase of the repository.
+Exceptions to the above were made in the preliminary "setup" phase of the repository-- for instance there was a short lived `dev` branch that has been abandoned in favor of merging the feature branches directly to main.
 
 # Conventional Commit Types
 
@@ -30,4 +29,4 @@ As always, BREAKING CHANGE is an acceptable footer, as is the BREAKING-CHANGE fo
 
 # Documentation
 
-Please, document your code! For reference, the Doxyfile takes as input all files in the `/include/`, `/src/`, and `/tests/` directories, so anything which is documented with doxygen style comments will be used to generate documentation. Preferably, all classes/structs/functions/methods would be documented, even private ones! To me, it's nice to know how all of the internals work. When the engine is in a usable state, it might make more sense to supply documentation which is only based on the public facing files!
+Please, document your code! For reference, the Doxyfile takes as input all files in the `/include/` and `/src/`, so anything which is documented with doxygen style comments will be used to generate documentation. Preferably, all classes/structs/functions/methods would be documented, even private ones! To me, it's nice to know how all of the internals work. When the engine is in a usable state, it might make more sense to supply documentation which is only based on the public facing files!
