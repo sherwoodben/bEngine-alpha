@@ -59,6 +59,7 @@ local function build_workspace_and_projects()
     -- as previously mentioned, each platform will now add the required per-platform dependencies
     filter "platforms:Windows"
         table.insert(dependenciesToBuild, "glfw")
+        table.insert(dependenciesToBuild, "miniaudio")
     filter{}
     
     -- next, make any other projects (i.e. dependencies) we build
