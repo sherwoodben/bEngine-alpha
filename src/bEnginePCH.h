@@ -28,6 +28,7 @@
 #    include <Windows.h>    // for Windows entry point (WinMain)
 #    include <glad\gl.h>    // for OpenGL functions, etc.
 #    include <GLFW\glfw3.h> // for window management, input, etc.
+#    include <miniaudio.h> // for audio playback
 #    undef WIN32_LEAN_AND_MEAN
 #endif
 // clang-format on
