@@ -115,6 +115,7 @@ local function build_workspace_and_projects()
         -- now we need to be sure to flag the appropriate files for building...
         files
         {
+            "../include/*.*",
             "../src/*.*"
         }
 
