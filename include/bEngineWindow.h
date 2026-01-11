@@ -3,6 +3,8 @@
 /// @file bEngineWindow.h
 /// @brief the interface for a window in the bEngine library
 
+#include <bEngineInput.h> // for access to the input state struct/functions
+
 #include <memory> // for access to unique _ptr for the PIMPL idiom
 #include <string> // for access to strings
 
@@ -69,6 +71,9 @@ namespace bEngine
         /// @brief store a unique pointer to the PlatformWindowImpl as per the PIMPL idiom
         std::unique_ptr<PlatformWindowImpl> m_impl{nullptr};
 
+        /// @brief the input state associated with the window (i.e. which keys are down, where the mouse is, etc.)
+        bEngineInputState m_inputState;
+
         /// @brief to ensure a bEngineWindow is only constructible via the static "factory" method _while also_
         /// utilizing unique_ptr, we use the "passkey/token" idiom
         ///
@@ -105,6 +110,10 @@ namespace bEngine
 
         // public methods/functions so the window can actually be used by the application
       public:
+        /// @brief gets the input state associated with the window
+        /// @return the input state associated with the window (as a const reference)
+        const bEngineInputState &get_input_state() const;
+
         /// @brief checks to see if this window should close or not
         ///
         /// this will be dependent on the platform's window implementation
@@ -114,6 +123,9 @@ namespace bEngine
         /// @brief gets the ID associated with this window
         /// @return the ID associated with this window
         const unsigned int get_window_ID() const;
+
+        /// @brief polls the system for the status of the inputs available to the application
+        void update_input_state();
 
         /// @brief wraps the window's user-provided render function
         ///

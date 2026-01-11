@@ -5,6 +5,7 @@
 /// @file bEngineApp.cpp
 /// @brief implementations for the bEngineApp.h file
 
+#include "bEngineInput.h"     // for access to the input polling/processing functions
 #include "bEnginePlatform.h"  // for access to platform-specific functions/methods
 #include "bEngineUtilities.h" // for access to versioning functions and info/warning/error macros
 #include "bEngineWindow.h"    // for access to the bEngineWindow class definition
@@ -54,6 +55,22 @@ const unsigned int bEngine::bEngineApp::add_window(std::unique_ptr<bEngineWindow
     return m_windows.back()->get_window_ID();
 }
 
+bEngine::bEngineWindow *const bEngine::bEngineApp::get_window(const unsigned int windowID)
+{
+    bEngineWindow *window{nullptr};
+
+    for (const auto &w : m_windows)
+    {
+        if (w->get_window_ID() == windowID)
+        {
+            window = w.get();
+            break;
+        }
+    }
+
+    return window;
+}
+
 const bool bEngine::bEngineApp::initialize()
 {
     // we only want to attempt to call the user-provided function if it actually exists!
@@ -92,6 +109,13 @@ void bEngine::bEngineApp::run()
 
         // first, poll the system for events
         bEngine::Platform::poll_platform_events();
+
+        // then, update the input... this might be better suited as an actual "event system" in the future;
+        // since each window has its own input state we need to poll the input for all windows in the list of windows
+        for (auto &window : m_windows)
+        {
+            window->update_input_state();
+        }
 
         // then update the timing variables and calculate the time since the last check:
         double currentTime{bEngine::Platform::get_time()};
