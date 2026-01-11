@@ -1,7 +1,11 @@
 #pragma once
 
 /// @file bEngineInput.h
-/// @brief definitions and declarations associated with user-input
+/// @brief definitions and declarations associated with application input
+///
+/// input is polled as frequently as possible (per window), and it is left to the user to process input as they see fit
+///
+/// @note in the future, it might make more sense to switch to an event based input system
 
 #include <string>        // for storing the various input codes as human-readable strings
 #include <unordered_map> // for storing input state based on an enum value
@@ -9,7 +13,7 @@
 namespace bEngine
 {
     /// @brief keycodes associated with keyboard input
-    enum struct bEngineKeyCode : uint16_t
+    enum struct bEngineKeyCode : uint8_t
     {
         key_1 = 0,
         key_2,
@@ -71,26 +75,8 @@ namespace bEngine
         first = key_1,
     };
 
-    /// @brief gets a human readable string associated with a bEngineKeyCode
-    /// @param keyCode the bEngineKeyCode in question
-    /// @return a human readable string representing the bEngineKeyCode (i.e. 'A' for bEngineKeyCode::key_a)
-    const std::string get_keycode_name(const bEngineKeyCode keyCode);
-
-    /// @brief custom incrementor so we can iterate over the key codes
-    /// @param keyCode the keyCode to increment
-    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
-    inline bEngineKeyCode operator++(bEngineKeyCode keyCode)
-    {
-        if (keyCode != bEngineKeyCode::last)
-        {
-            // cast from a bEngineKeyCode to a uint16_t, add one, then cast the result back to a bEngineKeyCode
-            return static_cast<bEngineKeyCode>(static_cast<uint16_t>(keyCode) + 1);
-        }
-
-        return bEngineKeyCode::last;
-    };
-
-    enum struct bEngineMouseButtonCode : uint16_t
+    /// @brief button codes associated with mouse buttons
+    enum struct bEngineMouseButtonCode : uint8_t
     {
         mouse_left = 0,
         mouse_mid,
@@ -100,28 +86,8 @@ namespace bEngine
         first = mouse_left,
     };
 
-    /// @brief gets a human readable string associated with a bEngineMouseButtonCode
-    /// @param keyCode the bEngineMouseButtonCode in question
-    /// @return a human readable string representing the bEngineMouseButtonCode (i.e. 'L MOUSE' for
-    /// bEngineKeyCode::mouse_left)
-    const std::string get_mouse_button_code_name(const bEngineMouseButtonCode mouseButtonCode);
-
-    /// @brief custom incrementor so we can iterate over the key codes
-    /// @param keyCode the keyCode to increment
-    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
-    inline bEngineMouseButtonCode operator++(bEngineMouseButtonCode mouseButtonCode)
-    {
-        if (mouseButtonCode != bEngineMouseButtonCode::last)
-        {
-            // cast from a bEngineMouseButtonCode to a uint16_t, add one, then cast the result back to a
-            // bEngineMouseButtonCode
-            return static_cast<bEngineMouseButtonCode>(static_cast<uint16_t>(mouseButtonCode) + 1);
-        }
-
-        return bEngineMouseButtonCode::last;
-    };
-
-    enum struct bEngineMouseAxisCode : uint16_t
+    /// @brief axis codes associated with mouse axes
+    enum struct bEngineMouseAxisCode : uint8_t
     {
         mouse_x,
         mouse_y,
@@ -130,26 +96,61 @@ namespace bEngine
         first = mouse_x,
     };
 
+    /// @brief custom incrementor so we can iterate over the key codes
+    /// @param keyCode the keyCode to increment
+    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
+    inline bEngineKeyCode &operator++(bEngineKeyCode &keyCode)
+    {
+        if (keyCode != bEngineKeyCode::last)
+        {
+            keyCode = static_cast<bEngineKeyCode>(static_cast<uint8_t>(keyCode) + 1);
+        }
+
+        return keyCode;
+    };
+
+    /// @brief custom incrementor so we can iterate over the key codes
+    /// @param keyCode the keyCode to increment
+    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
+    inline bEngineMouseButtonCode &operator++(bEngineMouseButtonCode &mouseButtonCode)
+    {
+        if (mouseButtonCode != bEngineMouseButtonCode::last)
+        {
+            mouseButtonCode = static_cast<bEngineMouseButtonCode>(static_cast<uint8_t>(mouseButtonCode) + 1);
+        }
+
+        return mouseButtonCode;
+    };
+
+    /// @brief custom incrementor so we can iterate over the mouse axis codes
+    /// @param keyCode the mouseAxisCode to increment
+    /// @return the next sequential mouseAxisCode, or bEngineMouseAxisCode::last if there is no next axis code
+    inline bEngineMouseAxisCode &operator++(bEngineMouseAxisCode &mouseAxisCode)
+    {
+        if (mouseAxisCode != bEngineMouseAxisCode::last)
+        {
+            mouseAxisCode = static_cast<bEngineMouseAxisCode>(static_cast<uint8_t>(mouseAxisCode) + 1);
+        }
+
+        return mouseAxisCode;
+    };
+
+    /// @brief gets a human readable string associated with a bEngineKeyCode
+    /// @param keyCode the bEngineKeyCode in question
+    /// @return a human readable string representing the bEngineKeyCode (i.e. 'A' for bEngineKeyCode::key_a)
+    const std::string get_keycode_name(const bEngineKeyCode keyCode);
+
     /// @brief gets a human readable string associated with a bEngineMouseAxisCode
     /// @param keyCode the bEngineMouseAxisCode in question
     /// @return a human readable string representing the bEngineMouseAxisCode (i.e. 'MOUSE X' for
     /// bEngineMouseAxisCode::mouse_x)
     const std::string get_mouse_axis_code_name(const bEngineMouseAxisCode mouseAxisCode);
 
-    /// @brief custom incrementor so we can iterate over the mouse axis codes
-    /// @param keyCode the mouseAxisCode to increment
-    /// @return the next sequential mouseAxisCode, or bEngineMouseAxisCode::last if there is no next axis code
-    inline bEngineMouseAxisCode operator++(bEngineMouseAxisCode mouseAxisCode)
-    {
-        if (mouseAxisCode != bEngineMouseAxisCode::last)
-        {
-            // cast from a bEngineMouseButtonCode to a uint16_t, add one, then cast the result back to a
-            // bEngineMouseButtonCode
-            return static_cast<bEngineMouseAxisCode>(static_cast<uint16_t>(mouseAxisCode) + 1);
-        }
-
-        return bEngineMouseAxisCode::last;
-    };
+    /// @brief gets a human readable string associated with a bEngineMouseButtonCode
+    /// @param keyCode the bEngineMouseButtonCode in question
+    /// @return a human readable string representing the bEngineMouseButtonCode (i.e. 'L MOUSE' for
+    /// bEngineKeyCode::mouse_left)
+    const std::string get_mouse_button_code_name(const bEngineMouseButtonCode mouseButtonCode);
 
     /// @brief the class which stores the input state associated with the application
     class bEngineInputState

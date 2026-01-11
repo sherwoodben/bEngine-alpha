@@ -58,7 +58,7 @@ void update(const double deltaTime)
     std::pair<double, double> mouseAxisValues;
 
     for (bEngine::bEngineKeyCode keyCode = bEngine::bEngineKeyCode::first; keyCode != bEngine::bEngineKeyCode::last;
-         keyCode                         = ++keyCode)
+         ++keyCode)
     {
         if (inputState.get_key_state(keyCode))
         {
@@ -68,7 +68,7 @@ void update(const double deltaTime)
 
     for (bEngine::bEngineMouseButtonCode mouseButtonCode = bEngine::bEngineMouseButtonCode::first;
          mouseButtonCode != bEngine::bEngineMouseButtonCode::last;
-         mouseButtonCode = ++mouseButtonCode)
+         ++mouseButtonCode)
     {
         if (inputState.get_mouse_button_state(mouseButtonCode))
         {

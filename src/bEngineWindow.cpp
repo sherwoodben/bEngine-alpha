@@ -163,10 +163,7 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
         };
 
         // for each of the keys we're interested in, set the state of the key in the inputState struct
-        //
-        // the 'keyCode = ++keyCode' at the end is kind of gross, but it gets the job done for now. Should instead fix
-        // the operator++ for the bEngineKeyCode enum but this is okay for now!
-        for (bEngineKeyCode keyCode = bEngineKeyCode::first; keyCode != bEngineKeyCode::last; keyCode = ++keyCode)
+        for (bEngineKeyCode keyCode = bEngineKeyCode::first; keyCode != bEngineKeyCode::last; ++keyCode)
         {
             inputState.set_key_state(keyCode, get_key_is_down(keyCode));
         }
@@ -174,7 +171,7 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
         // do the same for mouse buttons
         for (bEngineMouseButtonCode mouseButtonCode = bEngineMouseButtonCode::first;
              mouseButtonCode != bEngineMouseButtonCode::last;
-             mouseButtonCode = ++mouseButtonCode)
+             ++mouseButtonCode)
         {
             inputState.set_mouse_button_state(mouseButtonCode, get_mouse_button_is_down(mouseButtonCode));
         }
