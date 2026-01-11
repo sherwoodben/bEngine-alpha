@@ -124,6 +124,12 @@ namespace bEngine
         /// @return the ID associated with the new window
         const unsigned int add_window(std::unique_ptr<bEngineWindow> &&newWindow);
 
+        /// @brief gets the window associated with the windowID such that the window can be resized, the input state of
+        /// the window can be checked, etc.
+        /// @param windowID the ID of the window to retrieve
+        /// @return a pointer to the window identified by the provided ID, or nullptr if no such window exists
+        bEngineWindow *const get_window(const unsigned int windowID);
+
         /// @brief runs the (user-provided) initialization function and general application setup
         /// @return true if the user provided a initialization function and it succeeds OR if the user did NOT provide
         /// an initialization function and general initialization succeeds; returns false if the user-provided

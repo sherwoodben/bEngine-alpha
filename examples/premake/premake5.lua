@@ -47,4 +47,8 @@ end
 project "hello-world"
     set_example_project_defaults()
     files { "../hello-world/**.*", }
+
+project "input-polling"
+    set_example_project_defaults()
+    files { "../input-polling/**.*", }
     
