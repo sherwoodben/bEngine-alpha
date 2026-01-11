@@ -135,23 +135,6 @@ namespace bEngine
         return mouseAxisCode;
     };
 
-    /// @brief gets a human readable string associated with a bEngineKeyCode
-    /// @param keyCode the bEngineKeyCode in question
-    /// @return a human readable string representing the bEngineKeyCode (i.e. 'A' for bEngineKeyCode::key_a)
-    const std::string get_keycode_name(const bEngineKeyCode keyCode);
-
-    /// @brief gets a human readable string associated with a bEngineMouseAxisCode
-    /// @param keyCode the bEngineMouseAxisCode in question
-    /// @return a human readable string representing the bEngineMouseAxisCode (i.e. 'MOUSE X' for
-    /// bEngineMouseAxisCode::mouse_x)
-    const std::string get_mouse_axis_code_name(const bEngineMouseAxisCode mouseAxisCode);
-
-    /// @brief gets a human readable string associated with a bEngineMouseButtonCode
-    /// @param keyCode the bEngineMouseButtonCode in question
-    /// @return a human readable string representing the bEngineMouseButtonCode (i.e. 'L MOUSE' for
-    /// bEngineKeyCode::mouse_left)
-    const std::string get_mouse_button_code_name(const bEngineMouseButtonCode mouseButtonCode);
-
     /// @brief the class which stores the input state associated with the application
     class bEngineInputState
     {
@@ -205,4 +188,25 @@ namespace bEngine
         /// @param state true if the key state should be 'pressed' or false if the state should be 'released'
         void set_mouse_button_state(const bEngineMouseButtonCode mouseButtonCode, const bool state);
     };
+
+    /// @brief input "convenience" functions will live in the Input namespace
+    namespace Input
+    {
+        /// @brief gets a human readable string associated with a bEngineKeyCode
+        /// @param keyCode the bEngineKeyCode in question
+        /// @return a human readable string representing the bEngineKeyCode (i.e. 'A' for bEngineKeyCode::key_a)
+        const std::string get_keycode_name(const bEngineKeyCode keyCode);
+
+        /// @brief gets a human readable string associated with a bEngineMouseAxisCode
+        /// @param keyCode the bEngineMouseAxisCode in question
+        /// @return a human readable string representing the bEngineMouseAxisCode (i.e. 'MOUSE X' for
+        /// bEngineMouseAxisCode::mouse_x)
+        const std::string get_mouse_axis_code_name(const bEngineMouseAxisCode mouseAxisCode);
+
+        /// @brief gets a human readable string associated with a bEngineMouseButtonCode
+        /// @param keyCode the bEngineMouseButtonCode in question
+        /// @return a human readable string representing the bEngineMouseButtonCode (i.e. 'L MOUSE' for
+        /// bEngineKeyCode::mouse_left)
+        const std::string get_mouse_button_code_name(const bEngineMouseButtonCode mouseButtonCode);
+    } // namespace Input
 } // namespace bEngine
