@@ -18,6 +18,87 @@ namespace
 {
     /// @brief store the handle for the main window
     unsigned int g_mainWindowHandle{0};
+
+    /// @brief prints the input state (but only the parts which are different from the last time it was called!)
+    /// @param inputState the input state to print the associated state of
+    void print_input_state(const bEngineInputState &inputState)
+    {
+        // keep a list of all of the names of the pressed keys/mouse buttons as well as the current mouse position
+        std::vector<std::string>  pressedKeyNames{};
+        std::vector<std::string>  pressedMouseButtonNames{};
+        std::pair<double, double> mouseAxisValues{0.0, 0.0};
+
+        // loop through all of the key codes bEngine recognizes and add the ones which are pressed to the list of
+        // pressed key names
+        for (bEngineKeyCode keyCode = bEngineKeyCode::first; keyCode != bEngineKeyCode::last; ++keyCode)
+        {
+            if (inputState.get_key_state(keyCode))
+            {
+                pressedKeyNames.push_back(Input::get_keycode_name(keyCode));
+            }
+        }
+
+        // do the same for the mouse buttons:
+        for (bEngineMouseButtonCode mouseButtonCode = bEngineMouseButtonCode::first;
+             mouseButtonCode != bEngineMouseButtonCode::last;
+             ++mouseButtonCode)
+        {
+            if (inputState.get_mouse_button_state(mouseButtonCode))
+            {
+                pressedMouseButtonNames.push_back(Input::get_mouse_button_code_name(mouseButtonCode));
+            }
+        }
+
+        // store the mouse position...
+        mouseAxisValues.first  = inputState.get_mouse_axis_state(bEngineMouseAxisCode::mouse_x);
+        mouseAxisValues.second = inputState.get_mouse_axis_state(bEngineMouseAxisCode::mouse_y);
+
+        // build strings which concatenate the pressed keys/mouse buttons into one string for convenience of printing to
+        // the console... we also want to keep track of the previous values so we don't spam the same values to the
+        // console when we're printing information!
+        std::string pressedKeysString{""};
+        std::string pressedMouseButtonsString{""};
+
+        static std::string               lastPressedKeysString{""};
+        static std::string               lastPressedMouseButtonsString{""};
+        static std::pair<double, double> lastMouseAxisValues{0.0, 0.0};
+
+        // build the pressed keys string
+        for (const auto &name : pressedKeyNames)
+        {
+            pressedKeysString.append(name);
+            pressedKeysString.append(1, ' ');
+        }
+
+        // build the pressed mouse buttons string
+        for (const auto &name : pressedMouseButtonNames)
+        {
+            pressedMouseButtonsString.append(name);
+            pressedMouseButtonsString.append(1, ' ');
+        }
+
+        // only update the last pressed keys string if the new value is different; likewise only print the new value if
+        // the value is different!
+        if (pressedKeysString != lastPressedKeysString)
+        {
+            INFO_MSG(std::format("[EXAMPLE] PRESSED KEYS: {}", pressedKeysString));
+            lastPressedKeysString = pressedKeysString;
+        }
+
+        // do the same for the mouse buttons
+        if (pressedMouseButtonsString != lastPressedMouseButtonsString)
+        {
+            INFO_MSG(std::format("[EXAMPLE] PRESSED MOUSE BUTTONS: {}", pressedMouseButtonsString));
+            lastPressedMouseButtonsString = pressedMouseButtonsString;
+        }
+
+        // and the mouse position
+        if (mouseAxisValues != lastMouseAxisValues)
+        {
+            INFO_MSG(std::format("[EXAMPLE] MOUSE POSITION: ({}, {})", mouseAxisValues.first, mouseAxisValues.second));
+            lastMouseAxisValues = mouseAxisValues;
+        }
+    };
 } // namespace
 
 /// @brief initializes the main window and stores the (global) handle to the main window
@@ -31,7 +112,6 @@ const bool initialize(bEngineApp *const app)
 {
     // create a window for this example, when it is closed the application will terminate... but we can't rely on the
     // engine to do this automatically in this example!
-    INFO_MSG("Creating a window for the example project.");
     g_mainWindowHandle = app->add_window(bEngineWindow::create_window(1280, 720));
 
     // assume all other initialization went well; this is just the barebones example after all; return true so the
@@ -50,7 +130,7 @@ void update(const double deltaTime)
     const auto mainWindow = get_app().get_window(g_mainWindowHandle);
     if (!mainWindow)
     {
-        INFO_MSG("The main window has been closed. Quitting the application.");
+        INFO_MSG("[EXAMPLE] The main window has been closed. Quitting the application.");
         get_app().quit();
         return;
     }
@@ -58,90 +138,17 @@ void update(const double deltaTime)
     // now we want to get the input state associated with the main window:
     const auto &inputState = mainWindow->get_input_state();
 
-    // here's how we check if a specific key is pressed; in this case 'escape' which will quit the app.
+    // here's how we check if a specific key is pressed; in this case 'escape' which will close the window (which will
+    // quit the app).
     if (inputState.get_key_state(bEngineKeyCode::key_escape))
     {
-        INFO_MSG("Pressed 'escape'. Quitting the application.");
-        get_app().quit();
+        INFO_MSG("[EXAMPLE] Pressed 'escape'. Closing the window.");
+        mainWindow->set_should_close(true);
         return;
     }
 
-    // keep a list of all of the names of the pressed keys/mouse buttons as well as the current mouse position
-    std::vector<std::string>  pressedKeyNames{};
-    std::vector<std::string>  pressedMouseButtonNames{};
-    std::pair<double, double> mouseAxisValues{0.0, 0.0};
-
-    // loop through all of the key codes bEngine recognizes and add the ones which are pressed to the list of pressed
-    // key names
-    for (bEngineKeyCode keyCode = bEngineKeyCode::first; keyCode != bEngineKeyCode::last; ++keyCode)
-    {
-        if (inputState.get_key_state(keyCode))
-        {
-            pressedKeyNames.push_back(Input::get_keycode_name(keyCode));
-        }
-    }
-
-    // do the same for the mouse buttons:
-    for (bEngineMouseButtonCode mouseButtonCode = bEngineMouseButtonCode::first;
-         mouseButtonCode != bEngineMouseButtonCode::last;
-         ++mouseButtonCode)
-    {
-        if (inputState.get_mouse_button_state(mouseButtonCode))
-        {
-            pressedMouseButtonNames.push_back(Input::get_mouse_button_code_name(mouseButtonCode));
-        }
-    }
-
-    // store the mouse position...
-    mouseAxisValues.first  = inputState.get_mouse_axis_state(bEngineMouseAxisCode::mouse_x);
-    mouseAxisValues.second = inputState.get_mouse_axis_state(bEngineMouseAxisCode::mouse_y);
-
-    // build strings which concatenate the pressed keys/mouse buttons into one string for convenience of printing to the
-    // console...
-    // we also want to keep track of the previous values so we don't spam the same values to the console when we're
-    // printing information!
-    std::string pressedKeysString{""};
-    std::string pressedMouseButtonsString{""};
-
-    static std::string               lastPressedKeysString{""};
-    static std::string               lastPressedMouseButtonsString{""};
-    static std::pair<double, double> lastMouseAxisValues{0.0, 0.0};
-
-    // build the pressed keys string
-    for (const auto &name : pressedKeyNames)
-    {
-        pressedKeysString.append(name);
-        pressedKeysString.append(1, ' ');
-    }
-
-    // build the pressed mouse buttons string
-    for (const auto &name : pressedMouseButtonNames)
-    {
-        pressedMouseButtonsString.append(name);
-        pressedMouseButtonsString.append(1, ' ');
-    }
-
-    // only update the last pressed keys string if the new value is different; likewise only print the new value if the
-    // value is different!
-    if (pressedKeysString != lastPressedKeysString)
-    {
-        INFO_MSG(std::format("PRESSED KEYS: {}", pressedKeysString));
-        lastPressedKeysString = pressedKeysString;
-    }
-
-    // do the same for the mouse buttons
-    if (pressedMouseButtonsString != lastPressedMouseButtonsString)
-    {
-        INFO_MSG(std::format("PRESSED MOUSE BUTTONS: {}", pressedMouseButtonsString));
-        lastPressedMouseButtonsString = pressedMouseButtonsString;
-    }
-
-    // and the mouse position
-    if (mouseAxisValues != lastMouseAxisValues)
-    {
-        INFO_MSG(std::format("MOUSE POSITION: ({}, {})", mouseAxisValues.first, mouseAxisValues.second));
-        lastMouseAxisValues = mouseAxisValues;
-    }
+    // and now print the input state!
+    print_input_state(inputState);
 }
 
 namespace bEngine

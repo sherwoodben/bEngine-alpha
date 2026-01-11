@@ -24,8 +24,9 @@ namespace bEngine
     /// update
     typedef void (*app_update_fn)(const double deltaTime);
 
-    /// @brief application tick function signature typedef; returns (void) given the "fixed" timestep
-    typedef void (*app_tick_fn)(const double tickLength);
+    /// @brief application render function signature typedef; returns (void) given the amount of time since the last
+    /// call to this method-- allows the user to keep track of frame rates, multiple windows, etc.
+    typedef void (*app_render_fn)(const double tickLength);
 
     /// @brief application shutdown function signature typedef; returns (void) given a pointer to the application to be
     /// initialized
@@ -53,17 +54,15 @@ namespace bEngine
         /// @param name the desired name for the application, or the default application name if not provided
         /// @param initFn the initialization function to be used by the application, or nullptr if not provided
         /// @param updateFn the update function to be used by the application, or nullptr if not provided
-        /// @param tickLength the length of time (in seconds) to be used as the _initial_ tick length for the
-        /// application, or 1/60th of a second if not provided
-        /// @param tickFn the tick function to be used by the application, or nullptr if not provided
+        /// @param renderFn the render function for the application, or nullptr if not provided
         /// @param shutdownFn the shutdown function to be used by the application, or nullptr if not provided
-        /// @return
+        /// @return a bEngineApp which operates with the provided functions as the initialization, update, render, and
+        /// shutdown functions
         static bEngineApp create_app(
             std::string   &&name       = std::string{s_defaultAppName},
             app_init_fn     initFn     = nullptr,
             app_update_fn   updateFn   = nullptr,
-            double          tickLength = 1.0 / 60.0,
-            app_tick_fn     tickFn     = nullptr,
+            app_render_fn   renderFn   = nullptr,
             app_shutdown_fn shutdownFn = nullptr);
 
         // private data
@@ -77,11 +76,9 @@ namespace bEngine
         /// @brief the function pointer to the (user provided) update function
         const app_update_fn m_updateFn{nullptr};
 
-        /// @brief the length of time corresponding to one tick of the application, useful for "fixed" updates
-        double m_tickLength{1.0 / 60.0};
-
-        /// @brief the function pointer to the (user provided) tick function
-        const app_tick_fn m_tickFn{nullptr};
+        /// @brief the render function for the application; can render to multiple windows at various frame rates if
+        /// managed correctly
+        const app_render_fn m_renderFn{nullptr};
 
         /// @brief the function pointer to the (user provided) shutdown function
         const app_shutdown_fn m_shutdownFn{nullptr};
@@ -98,15 +95,13 @@ namespace bEngine
         /// @param name the desired name of the application
         /// @param initFn the desired (user-provided) initialization function of the application
         /// @param updateFn the desired (user-provided) update function of the application
-        /// @param tickLength the desired tick length of the application
-        /// @param tickFn the desired (user-provided) tick function of the application
+        /// @param renderFn the desired (user-provided) render function for the application
         /// @param shutdownFn the desired (user-provided) shutdown function of the application
         bEngineApp(
             std::string   &&name,
             app_init_fn     initFn,
             app_update_fn   updateFn,
-            double          tickLength,
-            app_tick_fn     tickFn,
+            app_render_fn   renderFn,
             app_shutdown_fn shutdownFn);
 
         // public ctor/dtor
@@ -123,6 +118,15 @@ namespace bEngine
         /// @param newWindow the new window to be added to the application
         /// @return the ID associated with the new window
         const unsigned int add_window(std::unique_ptr<bEngineWindow> &&newWindow);
+
+        /// @brief sets the "should close" flag of the window (identified by the windowID) to "true"
+        /// @param windowID the handle of the window to close
+        ///
+        /// if an invalid windowID is provided, nothing happens!
+        ///
+        /// @note there may or may not be an actual "flag" which is stored in the window struct _OR_ it might be managed
+        /// behind the scenes by the platform's window management backend
+        void close_window(const unsigned int windowID);
 
         /// @brief gets the window associated with the windowID such that the window can be resized, the input state of
         /// the window can be checked, etc.
@@ -141,16 +145,8 @@ namespace bEngine
 
         /// @brief runs the application's main loop
         ///
-        /// involves calling into the user-provided update/tick functions and any render functions for windows managed
-        /// by this application
+        /// involves polling input (per-window), calling into the user-provided update/render functions, etc.
         void run();
-
-        /// @brief sets the  desired tick length of the application
-        ///
-        /// a tick length represents the amount of time between fixed updates (i.e. ticks) so the application isn't
-        /// dependent on the framerate/etc.
-        /// @param tickLength
-        void set_tick_length(const double tickLength);
 
         /// @brief runs the application's (user-provided) shutdown function
         void shutdown() const;

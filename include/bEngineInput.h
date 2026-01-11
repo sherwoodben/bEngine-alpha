@@ -96,45 +96,6 @@ namespace bEngine
         first = mouse_x,
     };
 
-    /// @brief custom incrementor so we can iterate over the key codes
-    /// @param keyCode the keyCode to increment
-    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
-    inline bEngineKeyCode &operator++(bEngineKeyCode &keyCode)
-    {
-        if (keyCode != bEngineKeyCode::last)
-        {
-            keyCode = static_cast<bEngineKeyCode>(static_cast<uint8_t>(keyCode) + 1);
-        }
-
-        return keyCode;
-    };
-
-    /// @brief custom incrementor so we can iterate over the key codes
-    /// @param keyCode the keyCode to increment
-    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
-    inline bEngineMouseButtonCode &operator++(bEngineMouseButtonCode &mouseButtonCode)
-    {
-        if (mouseButtonCode != bEngineMouseButtonCode::last)
-        {
-            mouseButtonCode = static_cast<bEngineMouseButtonCode>(static_cast<uint8_t>(mouseButtonCode) + 1);
-        }
-
-        return mouseButtonCode;
-    };
-
-    /// @brief custom incrementor so we can iterate over the mouse axis codes
-    /// @param keyCode the mouseAxisCode to increment
-    /// @return the next sequential mouseAxisCode, or bEngineMouseAxisCode::last if there is no next axis code
-    inline bEngineMouseAxisCode &operator++(bEngineMouseAxisCode &mouseAxisCode)
-    {
-        if (mouseAxisCode != bEngineMouseAxisCode::last)
-        {
-            mouseAxisCode = static_cast<bEngineMouseAxisCode>(static_cast<uint8_t>(mouseAxisCode) + 1);
-        }
-
-        return mouseAxisCode;
-    };
-
     /// @brief the class which stores the input state associated with the application
     class bEngineInputState
     {
@@ -198,15 +159,54 @@ namespace bEngine
         const std::string get_keycode_name(const bEngineKeyCode keyCode);
 
         /// @brief gets a human readable string associated with a bEngineMouseAxisCode
-        /// @param keyCode the bEngineMouseAxisCode in question
+        /// @param mouseAxisCode the bEngineMouseAxisCode in question
         /// @return a human readable string representing the bEngineMouseAxisCode (i.e. 'MOUSE X' for
         /// bEngineMouseAxisCode::mouse_x)
         const std::string get_mouse_axis_code_name(const bEngineMouseAxisCode mouseAxisCode);
 
         /// @brief gets a human readable string associated with a bEngineMouseButtonCode
-        /// @param keyCode the bEngineMouseButtonCode in question
+        /// @param mouseButtonCode the bEngineMouseButtonCode in question
         /// @return a human readable string representing the bEngineMouseButtonCode (i.e. 'L MOUSE' for
         /// bEngineKeyCode::mouse_left)
         const std::string get_mouse_button_code_name(const bEngineMouseButtonCode mouseButtonCode);
     } // namespace Input
+
+    /// @brief custom incrementor so we can iterate over the key codes
+    /// @param keyCode the keyCode to increment
+    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
+    inline bEngineKeyCode &operator++(bEngineKeyCode &keyCode)
+    {
+        if (keyCode != bEngineKeyCode::last)
+        {
+            keyCode = static_cast<bEngineKeyCode>(static_cast<uint8_t>(keyCode) + 1);
+        }
+
+        return keyCode;
+    };
+
+    /// @brief custom incrementor so we can iterate over the key codes
+    /// @param mouseButtonCode the keyCode to increment
+    /// @return the next sequential keyCode, or bEngineKeyCode::last if there is no next key code
+    inline bEngineMouseButtonCode &operator++(bEngineMouseButtonCode &mouseButtonCode)
+    {
+        if (mouseButtonCode != bEngineMouseButtonCode::last)
+        {
+            mouseButtonCode = static_cast<bEngineMouseButtonCode>(static_cast<uint8_t>(mouseButtonCode) + 1);
+        }
+
+        return mouseButtonCode;
+    };
+
+    /// @brief custom incrementor so we can iterate over the mouse axis codes
+    /// @param mouseAxisCode the mouseAxisCode to increment
+    /// @return the next sequential mouseAxisCode, or bEngineMouseAxisCode::last if there is no next axis code
+    inline bEngineMouseAxisCode &operator++(bEngineMouseAxisCode &mouseAxisCode)
+    {
+        if (mouseAxisCode != bEngineMouseAxisCode::last)
+        {
+            mouseAxisCode = static_cast<bEngineMouseAxisCode>(static_cast<uint8_t>(mouseAxisCode) + 1);
+        }
+
+        return mouseAxisCode;
+    };
 } // namespace bEngine

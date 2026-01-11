@@ -68,6 +68,14 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
     /// window should stay open
     const bool get_should_close() const { return glfwWindowShouldClose(m_glfwWindow); };
 
+    /// @brief sets  the window's "should close" state by calling the GLFW provided function
+    /// @param shouldClose true if the window should close (i.e. we're programatically closing a window) and false if
+    /// the window should stay open
+    void set_should_close(const bool shouldClose) const
+    {
+        glfwSetWindowShouldClose(m_glfwWindow, shouldClose ? GLFW_TRUE : GLFW_FALSE);
+    };
+
     /// @brief for each of the inputs bEngine recognizes (keyboard, mouse, etc.) updates the input state so it's
     /// available for processing elsewhere
     /// @param inputState the input state struct to store the results in
@@ -199,37 +207,29 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
 
 #pragma endregion
 
-bEngine::bEngineWindow::bEngineWindow(
-    WindowToken,
-    const int                 width,
-    const int                 height,
-    std::string             &&title,
-    bEngine::window_render_fn renderFn)
+bEngine::bEngineWindow::bEngineWindow(WindowToken, const int width, const int height, std::string &&title)
     : m_size{width, height},
       m_title{title},
-      m_renderFn{renderFn},
-      m_impl{std::make_unique<PlatformWindowImpl>(m_size[0], m_size[1], m_title.c_str())}
-{
-    INFO_MSG(std::format("Created Window #{}", m_windowID));
-}
+      m_impl{std::make_unique<PlatformWindowImpl>(m_size[0], m_size[1], m_title.c_str())} { };
+
+bEngine::bEngineWindow::~bEngineWindow() { };
 
 const bEngine::bEngineInputState &bEngine::bEngineWindow::get_input_state() const
 {
     return m_inputState;
 }
 
-bEngine::bEngineWindow::~bEngineWindow()
-{
-    INFO_MSG(std::format("Destroyed Window #{}", m_windowID));
-}
-
 std::unique_ptr<bEngine::bEngineWindow> bEngine::bEngineWindow::create_window(
-    const int                 width,
-    const int                 height,
-    std::string             &&title,
-    bEngine::window_render_fn renderFn)
+    const int     width,
+    const int     height,
+    std::string &&title)
 {
-    return std::make_unique<bEngine::bEngineWindow>(WindowToken{}, width, height, std::move(title), renderFn);
+    std::unique_ptr<bEngine::bEngineWindow> window{
+        std::make_unique<bEngine::bEngineWindow>(WindowToken{}, width, height, std::move(title))};
+
+    INFO_MSG(std::format("[WINDOW #{}] Created window.", window->get_window_ID()));
+
+    return window;
 }
 
 const bool bEngine::bEngineWindow::get_should_close() const
@@ -242,15 +242,14 @@ const unsigned int bEngine::bEngineWindow::get_window_ID() const
     return m_windowID;
 }
 
-void bEngine::bEngineWindow::update_input_state()
+void bEngine::bEngineWindow::set_should_close(const bool shouldClose) const
 {
-    m_impl->update_input_state(m_inputState);
+    INFO_MSG(std::format("[WINDOW #{}] Set 'should close' flag to {}.", m_windowID, shouldClose ? "TRUE" : "FALSE"));
+    m_impl->set_should_close(shouldClose);
 }
 
-void bEngine::bEngineWindow::render() const
+void bEngine::bEngineWindow::update(const double deltaTime)
 {
-    if (m_renderFn)
-    {
-        m_renderFn(this);
-    }
+    // then, update the input state
+    m_impl->update_input_state(m_inputState);
 }

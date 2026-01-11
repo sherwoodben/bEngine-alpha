@@ -54,32 +54,30 @@
 int bENTRY_POINT()
 {
     INFO_MSG(std::format(
-        "Running bEngine-alpha v{} ({})",
+        "[MAIN] Running bEngine-alpha v{} ({})",
         bEngine::Utils::get_version_string(),
         bEngine::Utils::get_commit_hash()));
 
-    INFO_MSG("Preparing platform specific backends...");
+    INFO_MSG("[MAIN] Initializing platform specific backends.");
     if (!bEngine::Platform::initialize_platform_backends())
     {
         ERROR_MSG("Platform initialization failed. Exiting with return code -1.");
         return -1;
     }
 
-    INFO_MSG("Running the application initialization function...");
     auto &app = bEngine::get_app();
+
     if (!app.initialize())
     {
         ERROR_MSG("Application initialization failed. Exiting with return code -1.");
         return -1;
     }
 
-    INFO_MSG("Running the application loop...");
     app.run();
 
-    INFO_MSG("Running user data free function...");
     app.shutdown();
 
-    INFO_MSG("Freeing platform specific backends...");
+    INFO_MSG("[MAIN] Termninating platform specific backends.");
     bEngine::Platform::free_platform_backends();
 
     return 0;
