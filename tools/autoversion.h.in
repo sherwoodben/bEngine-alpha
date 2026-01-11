@@ -10,10 +10,19 @@
 
 // DO NOT MODIFY THIS FILE! (unless you know what you're doing!)
 
+/// @brief the complete "version string" associated with this version of @PROJECT_NAME@
 #define @PROJECT_NAME@_VERSION_STRING "@VERSION_STRING@"
+
+/// @brief the major version number associated with this version of @PROJECT_NAME@
 #define @PROJECT_NAME@_VERSION_MAJOR @VERSION_MAJOR@
+
+/// @brief the minor version number associated with this version of @PROJECT_NAME@
 #define @PROJECT_NAME@_VERSION_MINOR @VERSION_MINOR@
+
+/// @brief the patch number associated with this version of @PROJECT_NAME@
 #define @PROJECT_NAME@_VERSION_PATCH @VERSION_PATCH@
+
+/// @brief the commit hash associated with this version of @PROJECT_NAME@
 #define @PROJECT_NAME@_COMMIT_HASH "@COMMIT_HASH@"
 
 #endif // AUTOVERSION_H
