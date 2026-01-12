@@ -13,10 +13,6 @@ namespace bEngine
     // fwd declaration for the bEngineWindow class which is used as an argument in the render function typedef
     class bEngineWindow;
 
-    /// @brief the typedef associated with a window render function; returns (void) given a pointer to the (const)
-    /// window to render to
-    typedef void (*window_render_fn)(const bEngineWindow *const window);
-
     /// @brief the bEngineWindow interface for interacting with the window/storing window data
     class bEngineWindow
     {
@@ -35,14 +31,11 @@ namespace bEngine
         /// @param width the desired width of the window
         /// @param height the desired height of the window
         /// @param title the desired title of the window, or the default window title if not provided
-        /// @param renderFn the function pointer to the desired render function for the window, or nullptr if not
-        /// provided
         /// @return a unique pointer to the new window which was created with the provided arguments
         static std::unique_ptr<bEngineWindow> create_window(
             const int        width,
             const int        height,
-            std::string    &&title    = std::string{s_defaultWindowName},
-            window_render_fn renderFn = nullptr);
+            std::string    &&title       = std::string{s_defaultWindowName});
 
         // private members/data
       private:
@@ -60,9 +53,6 @@ namespace bEngine
 
         /// @brief the title of the window
         std::string m_title{""};
-
-        /// @brief the window's (user provided) render function
-        window_render_fn m_renderFn{nullptr};
 
         /// @the platform-specific window implementation; defined in the bEngineWindow.cpp file and must be implemented
         /// per-platform
@@ -100,13 +90,11 @@ namespace bEngine
         /// @param width the desired width of the window
         /// @param height the desired height of the window
         /// @param title the desired title for the window
-        /// @param renderFn the desired render function for the window
         bEngineWindow(
             WindowToken      token,
             const int        width,
             const int        height,
-            std::string    &&title,
-            window_render_fn renderFn);
+            std::string    &&title);
 
         // public methods/functions so the window can actually be used by the application
       public:
@@ -124,17 +112,13 @@ namespace bEngine
         /// @return the ID associated with this window
         const unsigned int get_window_ID() const;
 
-        /// @brief polls the system for the status of the inputs available to the application
-        void update_input_state();
+        /// @brief sets the window's 'should close' state
+        /// @param shouldClose true means the window should close, false means it should not close
+        void set_should_close(const bool shouldClose) const;
 
-        /// @brief wraps the window's user-provided render function
-        ///
-        /// As a rough idea of the implementation (though not necessarily 100% accurate):
-        /// - clears the window
-        /// - ensures the window is targeted for rendering
-        /// - renders
-        /// - presents the result to the window
-        void render() const;
+        /// @brief updates the window's input state, render accumulator, etc.
+        /// @param deltaTime the amount of time to use to update values with (in seconds)
+        void update(const double deltaTime);
     };
 
 } // namespace bEngine

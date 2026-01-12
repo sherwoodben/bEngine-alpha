@@ -21,29 +21,30 @@ bEngine::bEngineApp::bEngineApp(
     std::string   &&name,
     app_init_fn     initFn,
     app_update_fn   updateFn,
-    double          tickLength,
-    app_tick_fn     tickFn,
+    app_render_fn   renderFn,
     app_shutdown_fn shutdownFn)
     : m_name{name},
       m_initFn{initFn},
       m_updateFn{updateFn},
-      m_tickLength{tickLength},
-      m_tickFn{tickFn},
+      m_renderFn{renderFn},
       m_shutdownFn{shutdownFn} { };
 
 bEngine::bEngineApp bEngine::bEngineApp::create_app(
     std::string   &&name,
     app_init_fn     initFn,
     app_update_fn   updateFn,
-    double          tickLength,
-    app_tick_fn     tickFn,
+    app_render_fn   renderFn,
     app_shutdown_fn shutdownFn)
 {
-    return bEngine::bEngineApp{std::move(name), initFn, updateFn, tickLength, tickFn, shutdownFn};
+    // we can simply call the ctor _inside_ this method since it's a static method of the bEngineApp and the ctor is
+    // private; this enforces the use of this "factory" function
+    return bEngine::bEngineApp{std::move(name), initFn, updateFn, renderFn, shutdownFn};
 }
 
 void bEngine::bEngineApp::shutdown() const
 {
+    INFO_MSG("[APPLICATION] Running shutdown function.");
+
     // we only want to attempt to call the user-provided function if it actually exists!
     if (m_shutdownFn)
         m_shutdownFn(this);
@@ -51,14 +52,32 @@ void bEngine::bEngineApp::shutdown() const
 
 const unsigned int bEngine::bEngineApp::add_window(std::unique_ptr<bEngineWindow> &&newWindow)
 {
+    // move the new window into the vector if windows
     m_windows.emplace_back(std::move(newWindow));
+
+    // since we know the window is at the back of the vector, return the ID of the window at the back of the vector
+    // (i.e. the ID of the new window!)
     return m_windows.back()->get_window_ID();
+}
+
+void bEngine::bEngineApp::close_window(const unsigned int windowID)
+{
+    // will be nullptr if the provided windowID is not actually the ID of a window
+    bEngineWindow *window{get_window(windowID)};
+
+    // only close the window if we actually found a window
+    if (window)
+    {
+        window->set_should_close(true);
+    }
 }
 
 bEngine::bEngineWindow *const bEngine::bEngineApp::get_window(const unsigned int windowID)
 {
     bEngineWindow *window{nullptr};
 
+    // loop through all of the windows in the vector of windows; if the ID of the window matches the desired ID, set the
+    // pointer we'll return to that window
     for (const auto &w : m_windows)
     {
         if (w->get_window_ID() == windowID)
@@ -68,28 +87,35 @@ bEngine::bEngineWindow *const bEngine::bEngineApp::get_window(const unsigned int
         }
     }
 
+    // return the window pointer, which is nullptr if the provided windowID is not actually the ID of a window
     return window;
 }
 
 const bool bEngine::bEngineApp::initialize()
 {
+    INFO_MSG("[APPLICATION] Running initialization function.");
+
     // we only want to attempt to call the user-provided function if it actually exists!
     if (m_initFn)
         return m_initFn(this);
 
-    // now we do general application initialization stuff (if needed) and return true so long as everything goes well
+    // TO-DO: general application initialization stuff, if needed!
 
+    // return true to indicate everything initialized correctly
     return true;
 }
 
 void bEngine::bEngineApp::quit()
 {
-    INFO_MSG("Quitting...");
+    INFO_MSG("[APPLICATION] Quitting.");
+
     m_isRunning = false;
 }
 
 void bEngine::bEngineApp::run()
 {
+    INFO_MSG("[APPLICATION] Running main loop.");
+
     // declare some timing variables
     double lastTime{bEngine::Platform::get_time()};
     double tickAccumulator{0.0};
@@ -97,12 +123,11 @@ void bEngine::bEngineApp::run()
     // the loop continues while the app is still running...
     while (m_isRunning)
     {
-        // if the update function AND the tick function are nullptr, (and there are no windows) the app doesn't actually
-        // do anything... in that case just quit (by setting the "isRunning" flag to false and trying to do another
-        // loop!
-        if (!m_updateFn && !m_tickFn && m_windows.empty())
+        // if the update function is nullptr AND and there are no windows the app doesn't actually do anything... in
+        // that case just quit (by setting the "isRunning" flag to false and trying to do another loop!
+        if (!m_updateFn && m_windows.empty())
         {
-            WARNING_MSG("The application has no windows, update function, or tick function. It will now quit.");
+            INFO_MSG("[APPLICATION] The application has no windows and no update function. It will now quit.");
             quit();
             continue;
         }
@@ -110,17 +135,17 @@ void bEngine::bEngineApp::run()
         // first, poll the system for events
         bEngine::Platform::poll_platform_events();
 
-        // then, update the input... this might be better suited as an actual "event system" in the future;
-        // since each window has its own input state we need to poll the input for all windows in the list of windows
-        for (auto &window : m_windows)
-        {
-            window->update_input_state();
-        }
-
         // then update the timing variables and calculate the time since the last check:
         double currentTime{bEngine::Platform::get_time()};
         double deltaTime{currentTime - lastTime};
-        lastTime = currentTime;
+
+        // then, update each window, passing the amount of time to use to update values (i.e. deltaTime!)
+        //
+        // this also updates the input state for each window
+        for (auto &window : m_windows)
+        {
+            window->update(deltaTime);
+        }
 
         tickAccumulator += deltaTime;
 
@@ -128,40 +153,24 @@ void bEngine::bEngineApp::run()
         if (m_updateFn)
             m_updateFn(deltaTime);
 
-        // we tick as frequently as the tick rate (inverse of tick length) and we do multiple ticks if we somehow
-        // lag/time-out
-        while (m_tickFn && tickAccumulator >= m_tickLength)
-        {
-            m_tickFn(m_tickLength);
-            tickAccumulator -= m_tickLength;
-        }
+        // do the same with the render function
+        if (m_renderFn)
+            m_renderFn(deltaTime);
 
-        // now we'll check for windows which should close; if they should close we'll simply call the .reset() method
-        // and if they shouldn't we'll move them into a new vector then replace the old vector with the new vector and
+        // now we'll check for windows which should close; if they shouldn't close we'll move them into a new vector
+        // then replace the old vector with the new vector, which will call the destructor for the windows in the old
+        // "moved into" vector
         std::vector<std::unique_ptr<bEngine::bEngineWindow>> openWindows;
         for (auto &window : m_windows)
         {
-            if (window && window->get_should_close())
-            {
-                window.reset();
-            }
-            else if (window)
+            if (window && !window->get_should_close())
             {
                 openWindows.emplace_back(std::move(window));
             }
         }
         m_windows = std::move(openWindows);
 
-        // since we know all of the windows left in the vector are valid, we can just issue render commands to all of
-        // them without worrying about nullptrs!
-        for (auto &window : m_windows)
-        {
-            window->render();
-        }
+        // set the last time to the current time so calculations will be accurate next time through the loop!
+        lastTime = currentTime;
     }
-}
-
-void bEngine::bEngineApp::set_tick_length(const double tickLength)
-{
-    m_tickLength = tickLength;
 }

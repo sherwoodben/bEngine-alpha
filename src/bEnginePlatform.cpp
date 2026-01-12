@@ -24,11 +24,11 @@ const bool bEngine::Platform::initialize_platform_backends()
     const auto glfwResult = glfwInit();
     if (glfwResult)
     {
-        INFO_MSG("Initialized glfw.");
+        INFO_MSG("[PLATFORM] Initialized glfw.");
     }
     else
     {
-        ERROR_MSG("Failed to initialize GLFW.");
+        ERROR_MSG("[PLATFORM] Failed to initialize GLFW.");
         return false;
     }
 
@@ -36,11 +36,11 @@ const bool bEngine::Platform::initialize_platform_backends()
     const auto miniaudioResult = (ma_engine_init(nullptr, &audioEngine) == MA_SUCCESS);
     if (miniaudioResult)
     {
-        INFO_MSG("Initialized miniaudio.");
+        INFO_MSG("[PLATFORM] Initialized miniaudio.");
     }
     else
     {
-        ERROR_MSG("Failed to initialize miniaudio.");
+        ERROR_MSG("[PLATFORM] Failed to initialize miniaudio.");
         return false;
     }
 
@@ -49,7 +49,7 @@ const bool bEngine::Platform::initialize_platform_backends()
 
 void bEngine::Platform::free_platform_backends()
 {
-    INFO_MSG("Terminating glfw.");
+    INFO_MSG("[PLATFORM] Terminating glfw.");
     glfwTerminate();
 
     // NOTE: I've experienced strange bugs in other projects when closing the program which seemed to be caused by
@@ -58,7 +58,7 @@ void bEngine::Platform::free_platform_backends()
     // The fix?
     //
     // Terminate the audio engine _after_ calling glfwTerminate
-    INFO_MSG("Terminating miniaudio.");
+    INFO_MSG("[PLATFORM] Terminating miniaudio.");
     ma_engine_uninit(&audioEngine);
 }
 
