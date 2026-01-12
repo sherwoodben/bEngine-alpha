@@ -8,22 +8,27 @@ In short:
 
 - Most "work" should be done on feature branches, which are then merged into the `main` branch.
 - Commit messages on feature branches _may_ follow "conventional commit" guidelines; at a minimum they _must_ be descriptive.
-- Commit messages on the `main` branch _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `feat`, `setup` or `docs`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this. To facilitate this, it might be useful to squash the commits of a feature branch such that a single conventional commit message can represent the new feature or patch being implemented by the feature branch instead of trying to determine if the type should be located in a commit message on the feature branch or in the merge commit message itself.
-- All commits on the `main` branch after that which is tagged 0.0.0 should also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`). Exceptions may be made in the case of updates which only apply to documentation. This may also be made easier by utilizing squash commits.
+- Commit messages on the `main` branch _must_ follow "conventional commit" guidelines; furthermore commits to `main` _must_ be of type `fix`, `refactor`, `feat`, `setup` or `docs`---except for exceptional circumstances which might arise since I'm still learning the ropes of managing repositories like this. To facilitate this, it might be useful to squash the commits of a feature branch such that a single conventional commit message can represent the new feature or patch being implemented by the feature branch instead of trying to determine if the type should be located in a commit message on the feature branch or in the merge commit message itself.
+- All commits on the `main` branch after that which is tagged 0.0.0 _should_ also be tagged, with the tag determined via semantic versioning (i.e. `MAJOR.MINOR.PATCH`)[^1]. Exceptions may be made in the case of updates which only apply to documentation. This may also be made easier by utilizing squash commits.
+
+[^1]: Of course during initial development (i.e. versions 0.X.Y) "semantic versioning" has a less-strict definition, since breaking changes can be implemented at any time!
 
 Exceptions to the above were made in the preliminary "setup" phase of the repository-- for instance there was a short lived `dev` branch that has been abandoned in favor of merging the feature branches directly to main which also resulted in some untagged commits on main-- not a huge deal, but if I'm setting rules I'd like to follow them!
+
+At some point, the "initial stages" of the repository might be cleaned up with force-pushed "good" history, if the chaos bothers me too much.
 
 # Conventional Commit Types
 
 The following are used as "types" for the commit messages; if I see a need to add a new type I will!
 
-|__Type__|__Use Case__                                         |
-|:------:|:----------------------------------------------------|
-| fix    | fixed a bug/error                                   |
-| feat   | a new feature has been added                        |
-| setup  | configured settings, etc.                           |
-| docs   | changes to documentation                            |
-| wip    | useful on feature branches for  in-progress commits |
+|__Type__  |__Use Case__                                         |
+|:--------:|:----------------------------------------------------|
+| fix      | fixed a bug/error                                   |
+| refactor | for refactoring                                     |
+| feat     | a new feature has been added                        |
+| setup    | configured settings, etc.                           |
+| docs     | changes to documentation                            |
+| wip      | useful on feature branches for  in-progress commits |
 
 As always, BREAKING CHANGE is an acceptable footer, as is the BREAKING-CHANGE footer and the ! signifier in the type.
 
