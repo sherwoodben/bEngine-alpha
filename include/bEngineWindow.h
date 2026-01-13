@@ -33,9 +33,9 @@ namespace bEngine
         /// @param title the desired title of the window, or the default window title if not provided
         /// @return a unique pointer to the new window which was created with the provided arguments
         static std::unique_ptr<bEngineWindow> create_window(
-            const int        width,
-            const int        height,
-            std::string    &&title       = std::string{s_defaultWindowName});
+            const int     width,
+            const int     height,
+            std::string &&title = std::string{s_defaultWindowName});
 
         // private members/data
       private:
@@ -56,6 +56,9 @@ namespace bEngine
 
         /// @the platform-specific window implementation; defined in the bEngineWindow.cpp file and must be implemented
         /// per-platform
+        ///
+        /// each platform's PIMPL will also manage a GL context such that window drawing/rendering commands can use the
+        /// correct function pointers; no need to actually expose the GL context struct however!
         struct PlatformWindowImpl;
 
         /// @brief store a unique pointer to the PlatformWindowImpl as per the PIMPL idiom
@@ -90,11 +93,7 @@ namespace bEngine
         /// @param width the desired width of the window
         /// @param height the desired height of the window
         /// @param title the desired title for the window
-        bEngineWindow(
-            WindowToken      token,
-            const int        width,
-            const int        height,
-            std::string    &&title);
+        bEngineWindow(WindowToken token, const int width, const int height, std::string &&title);
 
         // public methods/functions so the window can actually be used by the application
       public:
