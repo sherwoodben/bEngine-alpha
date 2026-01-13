@@ -5,7 +5,11 @@
 /// @file bEngineWindow.cpp
 /// @brief implementations for the bEngineWindow.h file
 
+#include "bEngineGL.h"        // for access to the GL struct/context which must be managed per window
 #include "bEngineUtilities.h" // for access to info messaging, etc.
+
+#include <glm\glm.hpp>          // for access to vec4
+#include <glm\gtc\type_ptr.hpp> // for accessing vecs as float pointers, etc.
 
 #include <format> // for formatting info messages, etc.
 
@@ -46,17 +50,37 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
     /// @brief the GLFWWindow* associated with this PlatformWindowImpl
     GLFWwindow *const m_glfwWindow{nullptr};
 
+    /// @brief the gl context associated with the window
+    ///
+    /// there's no need to actually expose bare OpenGL functions to the user, so we'll store this in the PIMPL and
+    /// forward calls from the interface!
+    bEngineGL m_gl{};
+
     /// @brief default ctor is insufficient
     PlatformWindowImpl() = delete;
 
     /// @brief ctor which takes the necessary arguments to actually construct a PlatformWindowImpl
     ///
+    /// also loads the GL function pointers into this window's gl context
     /// creates a GLFWwindow and stores the pointer to the window
     /// @param width the desired width of the window (in pixels)
     /// @param height the desired height of the window (in pixels)
     /// @param title the desired title of the window
     PlatformWindowImpl(const int width, const int height, const char *const title)
-        : m_glfwWindow{create_glfw_window_with_hints(width, height, title)} { };
+        : m_glfwWindow{create_glfw_window_with_hints(width, height, title)}
+    {
+        // the glfw window must be the current context when loading the gl function pointers for the windows
+        // implementation...
+        glfwMakeContextCurrent(m_glfwWindow);
+
+        // load the gl function pointers
+        const bool glSuccess = load_gl_function_pointers(m_gl);
+
+        // ALL windows must successfully load a GL context; use an assertion to cause a crash if something is wrong
+        //
+        // this will throw an std::exception; without an associated try/catch block this will terminate the program
+        bENGINE_ASSERT(glSuccess, "Failed to load the GL context for the window.");
+    };
 
     /// @brief dtor destroys the GLFWwindow associated with this PlatformWindowImpl
     ~PlatformWindowImpl() { glfwDestroyWindow(m_glfwWindow); };
@@ -68,7 +92,10 @@ struct bEngine::bEngineWindow::PlatformWindowImpl
     /// window should stay open
     const bool get_should_close() const { return glfwWindowShouldClose(m_glfwWindow); };
 
-    /// @brief sets  the window's "should close" state by calling the GLFW provided function
+    /// @brief swaps the buffers of the window, presenting the results of rendering functions
+    void present() const { glfwSwapBuffers(m_glfwWindow); };
+
+    /// @brief sets the window's "should close" state by calling the GLFW provided function
     /// @param shouldClose true if the window should close (i.e. we're programatically closing a window) and false if
     /// the window should stay open
     void set_should_close(const bool shouldClose) const
@@ -214,6 +241,13 @@ bEngine::bEngineWindow::bEngineWindow(WindowToken, const int width, const int he
 
 bEngine::bEngineWindow::~bEngineWindow() { };
 
+void bEngine::bEngineWindow::clear(const float r, const float g, const float b, const float a) const
+{
+    const auto &gl = m_impl->m_gl;
+
+    gl.ClearNamedFramebufferfv(0, GL_COLOR, 0, glm::value_ptr(glm::vec4{r, g, b, a}));
+}
+
 const bEngine::bEngineInputState &bEngine::bEngineWindow::get_input_state() const
 {
     return m_inputState;
@@ -240,6 +274,11 @@ const bool bEngine::bEngineWindow::get_should_close() const
 const unsigned int bEngine::bEngineWindow::get_window_ID() const
 {
     return m_windowID;
+}
+
+void bEngine::bEngineWindow::present() const
+{
+    m_impl->present();
 }
 
 void bEngine::bEngineWindow::set_should_close(const bool shouldClose) const

@@ -33,9 +33,9 @@ namespace bEngine
         /// @param title the desired title of the window, or the default window title if not provided
         /// @return a unique pointer to the new window which was created with the provided arguments
         static std::unique_ptr<bEngineWindow> create_window(
-            const int        width,
-            const int        height,
-            std::string    &&title       = std::string{s_defaultWindowName});
+            const int     width,
+            const int     height,
+            std::string &&title = std::string{s_defaultWindowName});
 
         // private members/data
       private:
@@ -56,6 +56,9 @@ namespace bEngine
 
         /// @the platform-specific window implementation; defined in the bEngineWindow.cpp file and must be implemented
         /// per-platform
+        ///
+        /// each platform's PIMPL will also manage a GL context such that window drawing/rendering commands can use the
+        /// correct function pointers; no need to actually expose the GL context struct however!
         struct PlatformWindowImpl;
 
         /// @brief store a unique pointer to the PlatformWindowImpl as per the PIMPL idiom
@@ -90,14 +93,17 @@ namespace bEngine
         /// @param width the desired width of the window
         /// @param height the desired height of the window
         /// @param title the desired title for the window
-        bEngineWindow(
-            WindowToken      token,
-            const int        width,
-            const int        height,
-            std::string    &&title);
+        bEngineWindow(WindowToken token, const int width, const int height, std::string &&title);
 
         // public methods/functions so the window can actually be used by the application
       public:
+        /// @brief uses the desired color to clear the window
+        /// @param r the red component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the green component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the blue component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the alpha component to use for the color to clear the window with, defaults to 1.0
+        void clear(const float r = 0.0f, const float g = 0.0f, const float b = 0.0f, const float a = 1.0f) const;
+
         /// @brief gets the input state associated with the window
         /// @return the input state associated with the window (as a const reference)
         const bEngineInputState &get_input_state() const;
@@ -111,6 +117,10 @@ namespace bEngine
         /// @brief gets the ID associated with this window
         /// @return the ID associated with this window
         const unsigned int get_window_ID() const;
+
+        /// @brief presents the results of the render commands which were issued to this window since the last time the
+        /// present method was called (i.e. swaps the buffers)
+        void present() const;
 
         /// @brief sets the window's 'should close' state
         /// @param shouldClose true means the window should close, false means it should not close
