@@ -51,4 +51,8 @@ project "hello-world"
 project "input-polling"
     set_example_project_defaults()
     files { "../input-polling/**.*", }
+
+project "rendering"
+    set_example_project_defaults()
+    files { "../rendering/**.*", }
     

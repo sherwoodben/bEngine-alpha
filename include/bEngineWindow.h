@@ -97,6 +97,13 @@ namespace bEngine
 
         // public methods/functions so the window can actually be used by the application
       public:
+        /// @brief uses the desired color to clear the window
+        /// @param r the red component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the green component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the blue component to use for the color to clear the window with, defaults to 0.0
+        /// @param r the alpha component to use for the color to clear the window with, defaults to 1.0
+        void clear(const float r = 0.0f, const float g = 0.0f, const float b = 0.0f, const float a = 1.0f) const;
+
         /// @brief gets the input state associated with the window
         /// @return the input state associated with the window (as a const reference)
         const bEngineInputState &get_input_state() const;
@@ -110,6 +117,10 @@ namespace bEngine
         /// @brief gets the ID associated with this window
         /// @return the ID associated with this window
         const unsigned int get_window_ID() const;
+
+        /// @brief presents the results of the render commands which were issued to this window since the last time the
+        /// present method was called (i.e. swaps the buffers)
+        void present() const;
 
         /// @brief sets the window's 'should close' state
         /// @param shouldClose true means the window should close, false means it should not close
